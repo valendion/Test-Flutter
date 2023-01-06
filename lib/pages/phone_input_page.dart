@@ -1,8 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:test_assignment/provider/otp_provider.dart';
 
-class PhoneInputPage extends StatelessWidget {
+class PhoneInputPage extends ConsumerStatefulWidget {
   const PhoneInputPage({super.key});
+
+  @override
+  ConsumerState<PhoneInputPage> createState() => _PhoneInputPageState();
+}
+
+class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
+  TextEditingController phoneController = TextEditingController();
+  @override
+  void dispose() {
+    super.dispose();
+    phoneController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +40,7 @@ class PhoneInputPage extends StatelessWidget {
                   color: Colors.black12,
                   borderRadius: BorderRadius.circular(15)),
               child: TextFormField(
+                  controller: phoneController,
                   autofocus: false,
                   keyboardType: TextInputType.phone,
                   decoration: const InputDecoration(
@@ -48,7 +64,11 @@ class PhoneInputPage extends StatelessWidget {
               width: MediaQuery.of(context).size.width - 40,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/otp');
+                  if (FirebaseAuth.instance.currentUser == null) {
+                    ref.read(phoneNumberProvider.notifier).state =
+                        phoneController.text.toString();
+                    Navigator.pushNamed(context, '/otp');
+                  }
                 },
                 child: const Text('Next'),
               ),
