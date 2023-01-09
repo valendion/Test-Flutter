@@ -6,4 +6,4 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final isResendOtp = StateProvider.autoDispose(((ref) => false));
 
 final phoneNumberProvider = StateProvider((ref) => '');
-final timerProvider = StateProvider((ref) => 30);
+final timerProvider = StateProvider.autoDispose((ref) => 30);

@@ -22,9 +22,10 @@ class _OtpPageState extends ConsumerState<OtpPage> {
   String? verificationId;
   late Timer _timer;
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
-    // _getSendSms(context, ref.read(phoneNumberProvider));
+    await setTimer();
+    _getSendSms(context, ref.read(phoneNumberProvider));
   }
 
   @override
@@ -97,7 +98,7 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                     child: InkWell(
                       onTap: () {
                         setTimer();
-                        // _getSendSms(context, ref.read(phoneNumberProvider));
+                        _getSendSms(context, ref.read(phoneNumberProvider));
                       },
                       child: const Text(
                         'Resend',
@@ -115,28 +116,28 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                 onPressed: () async {
                   try {
                     setTimer();
-                    // AuthCredential credential = PhoneAuthProvider.credential(
-                    //     verificationId: verificationId ?? '',
-                    //     smsCode: smsCode ?? '');
-                    // debugPrint(
-                    //     'verificationId: $verificationId \smsCode: $smsCode');
+                    AuthCredential credential = PhoneAuthProvider.credential(
+                        verificationId: verificationId ?? '',
+                        smsCode: smsCode ?? '');
+                    debugPrint(
+                        'verificationId: $verificationId \smsCode: $smsCode');
 
-                    // debugPrint('Credential: $credential ');
-                    // debugPrint('accessToken: ${credential.accessToken} ');
-                    // debugPrint('providerId: ${credential.providerId} ');
-                    // debugPrint('signInMethod: ${credential.signInMethod} ');
-                    // debugPrint('token: ${credential.token} ');
-                    // debugPrint(
-                    //     'uid: ${FirebaseAuth.instance.currentUser?.uid} ');
-                    // await FirebaseAuth.instance
-                    //     .signInWithCredential(credential)
-                    //     .then((value) {
-                    //   debugPrint('uid: ${value.user?.uid} ');
-                    //   if (value.user != null) {
-                    //     // Navigator.pushNamedAndRemoveUntil(
-                    //     //     context, '/home', ((route) => false));
-                    //   }
-                    // });
+                    debugPrint('Credential: $credential ');
+                    debugPrint('accessToken: ${credential.accessToken} ');
+                    debugPrint('providerId: ${credential.providerId} ');
+                    debugPrint('signInMethod: ${credential.signInMethod} ');
+                    debugPrint('token: ${credential.token} ');
+                    debugPrint(
+                        'uid: ${FirebaseAuth.instance.currentUser?.uid} ');
+                    await FirebaseAuth.instance
+                        .signInWithCredential(credential)
+                        .then((value) {
+                      debugPrint('uid: ${value.user?.uid} ');
+                      if (value.user != null) {
+                        // Navigator.pushNamedAndRemoveUntil(
+                        //     context, '/home', ((route) => false));
+                      }
+                    });
                   } on FirebaseAuthException catch (e) {
                     debugPrint('Error ${e.message.toString()}');
                   }
@@ -179,7 +180,7 @@ class _OtpPageState extends ConsumerState<OtpPage> {
         content: Text(message.toString())));
   }
 
-  void setTimer() {
+  Future<void> setTimer() async {
     const onSec = Duration(seconds: 1);
     ref.read(timerProvider.notifier).state = 30;
     ref.read(isResendOtp.notifier).state = false;
