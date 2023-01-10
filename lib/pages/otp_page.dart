@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
@@ -21,10 +22,12 @@ class _OtpPageState extends ConsumerState<OtpPage> {
   String? smsCode;
   String? verificationId;
   late Timer _timer;
+
   @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    await setTimer();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setTimer();
     _getSendSms(context, ref.read(phoneNumberProvider));
   }
 
@@ -115,7 +118,6 @@ class _OtpPageState extends ConsumerState<OtpPage> {
               child: ElevatedButton(
                 onPressed: () async {
                   try {
-                    setTimer();
                     AuthCredential credential = PhoneAuthProvider.credential(
                         verificationId: verificationId ?? '',
                         smsCode: smsCode ?? '');
@@ -134,8 +136,11 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                         .then((value) {
                       debugPrint('uid: ${value.user?.uid} ');
                       if (value.user != null) {
-                        // Navigator.pushNamedAndRemoveUntil(
-                        //     context, '/home', ((route) => false));
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/home', ((route) => false));
+                        showNotifWithToast('Berhasil login');
+                      } else {
+                        showNotifWithToast('Gagal login');
                       }
                     });
                   } on FirebaseAuthException catch (e) {
@@ -178,6 +183,16 @@ class _OtpPageState extends ConsumerState<OtpPage> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.green.shade900,
         content: Text(message.toString())));
+  }
+
+  void showNotifWithToast(String msg) {
+    Fluttertoast.showToast(
+        msg: msg,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        backgroundColor: Colors.grey,
+        textColor: Colors.black,
+        fontSize: 16.0);
   }
 
   Future<void> setTimer() async {

@@ -15,9 +15,10 @@ class HomePage extends StatelessWidget {
             tooltip: 'Logout',
             onPressed: () {
               try {
-                FirebaseAuth.instance.signOut().then((value) {
-                  Navigator.pushReplacementNamed(context, '/');
-                });
+                // FirebaseAuth.instance.signOut().then((value) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', ((route) => false));
+                // });
               } on FirebaseAuthException catch (e) {
                 debugPrint('Logout ${e.toString()}');
               }
