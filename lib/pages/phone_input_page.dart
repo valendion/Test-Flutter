@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test_assignment/provider/otp_provider.dart';
 
 class PhoneInputPage extends ConsumerStatefulWidget {
@@ -67,6 +68,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
                   if (FirebaseAuth.instance.currentUser == null) {
                     ref.read(phoneNumberProvider.notifier).state =
                         phoneController.text.toString();
+
                     Navigator.pushNamed(context, '/otp');
                   }
                 },

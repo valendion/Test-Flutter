@@ -136,9 +136,9 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                         .then((value) {
                       debugPrint('uid: ${value.user?.uid} ');
                       if (value.user != null) {
+                        showNotifWithToast('Berhasil login');
                         Navigator.pushNamedAndRemoveUntil(
                             context, '/home', ((route) => false));
-                        showNotifWithToast('Berhasil login');
                       } else {
                         showNotifWithToast('Gagal login');
                       }
