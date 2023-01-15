@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:test_assignment/pages/add_page.dart';
+import 'package:test_assignment/pages/phone_input_page.dart';
 
 class HomePage extends StatelessWidget {
+  static var routeName = '/homePage';
   const HomePage({super.key});
 
   @override
@@ -17,11 +20,20 @@ class HomePage extends StatelessWidget {
               try {
                 FirebaseAuth.instance.signOut().then((value) {
                   Navigator.pushNamedAndRemoveUntil(
-                      context, '/phone', ((route) => false));
+                      context, PhoneInputPage.routeName, ((route) => false));
                 });
               } on FirebaseAuthException catch (e) {
                 debugPrint('Logout ${e.toString()}');
+              } catch (e) {
+                debugPrint('Error ${e.toString()}');
               }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'Add',
+            onPressed: () {
+              Navigator.pushNamed(context, AddPage.routeName);
             },
           ),
         ],
