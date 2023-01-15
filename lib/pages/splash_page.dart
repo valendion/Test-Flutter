@@ -40,6 +40,7 @@ import 'package:test_assignment/provider/otp_provider.dart';
 // }
 
 class SplashPage extends ConsumerWidget {
+  static var routeName = '/';
   const SplashPage({super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {

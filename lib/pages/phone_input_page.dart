@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:test_assignment/pages/otp_page.dart';
 import 'package:test_assignment/provider/otp_provider.dart';
 
 class PhoneInputPage extends ConsumerStatefulWidget {
   const PhoneInputPage({super.key});
+  static var routeName = '/phonePage';
 
   @override
   ConsumerState<PhoneInputPage> createState() => _PhoneInputPageState();
@@ -69,7 +71,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
                     ref.read(phoneNumberProvider.notifier).state =
                         phoneController.text.toString();
 
-                    Navigator.pushNamed(context, '/otp');
+                    Navigator.pushNamed(context, OtpPage.routeName);
                   }
                 },
                 child: const Text('Next'),

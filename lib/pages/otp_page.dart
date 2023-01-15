@@ -9,10 +9,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:test_assignment/pages/home_page.dart';
 import 'package:test_assignment/provider/otp_provider.dart';
 
 class OtpPage extends ConsumerStatefulWidget {
   const OtpPage({super.key});
+  static var routeName = '/otpPage';
 
   @override
   ConsumerState<OtpPage> createState() => _OtpPageState();
@@ -25,7 +27,6 @@ class _OtpPageState extends ConsumerState<OtpPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setTimer();
     _getSendSms(context, ref.read(phoneNumberProvider));
@@ -121,24 +122,15 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                     AuthCredential credential = PhoneAuthProvider.credential(
                         verificationId: verificationId ?? '',
                         smsCode: smsCode ?? '');
-                    debugPrint(
-                        'verificationId: $verificationId \smsCode: $smsCode');
 
-                    debugPrint('Credential: $credential ');
-                    debugPrint('accessToken: ${credential.accessToken} ');
-                    debugPrint('providerId: ${credential.providerId} ');
-                    debugPrint('signInMethod: ${credential.signInMethod} ');
-                    debugPrint('token: ${credential.token} ');
-                    debugPrint(
-                        'uid: ${FirebaseAuth.instance.currentUser?.uid} ');
                     await FirebaseAuth.instance
                         .signInWithCredential(credential)
                         .then((value) {
-                      debugPrint('uid: ${value.user?.uid} ');
                       if (value.user != null) {
                         showNotifWithToast('Berhasil login');
+
                         Navigator.pushNamedAndRemoveUntil(
-                            context, '/home', ((route) => false));
+                            context, HomePage.routeName, ((route) => false));
                       } else {
                         showNotifWithToast('Gagal login');
                       }
@@ -164,8 +156,8 @@ class _OtpPageState extends ConsumerState<OtpPage> {
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: '+62$phoneNumber',
-        verificationCompleted: (credential) async {
-          await FirebaseAuth.instance.signInWithCredential(credential);
+        verificationCompleted: (_) {
+          // await FirebaseAuth.instance.signInWithCredential(credential);
         },
         verificationFailed: ((error) {
           debugPrint(error.message.toString());
@@ -185,8 +177,8 @@ class _OtpPageState extends ConsumerState<OtpPage> {
         content: Text(message.toString())));
   }
 
-  void showNotifWithToast(String msg) {
-    Fluttertoast.showToast(
+  void showNotifWithToast(String msg) async {
+    await Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
