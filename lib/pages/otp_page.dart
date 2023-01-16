@@ -11,6 +11,7 @@ import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:test_assignment/pages/home_page.dart';
 import 'package:test_assignment/provider/otp_provider.dart';
+import 'package:test_assignment/utils/auth_services.dart';
 
 class OtpPage extends ConsumerStatefulWidget {
   const OtpPage({super.key});
@@ -119,11 +120,10 @@ class _OtpPageState extends ConsumerState<OtpPage> {
               child: ElevatedButton(
                 onPressed: () async {
                   try {
-                    AuthCredential credential = PhoneAuthProvider.credential(
-                        verificationId: verificationId ?? '',
-                        smsCode: smsCode ?? '');
+                    var credential = AuthServices.getCredential(
+                        verificationId ?? '', smsCode ?? '');
 
-                    await FirebaseAuth.instance
+                    await AuthServices.getAuth
                         .signInWithCredential(credential)
                         .then((value) {
                       if (value.user != null) {
@@ -154,7 +154,7 @@ class _OtpPageState extends ConsumerState<OtpPage> {
     }
 
     try {
-      await FirebaseAuth.instance.verifyPhoneNumber(
+      await AuthServices.getAuth.verifyPhoneNumber(
         phoneNumber: '+62$phoneNumber',
         verificationCompleted: (_) {
           // await FirebaseAuth.instance.signInWithCredential(credential);

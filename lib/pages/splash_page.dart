@@ -50,7 +50,7 @@ class SplashPage extends ConsumerWidget {
         return (user != null) ? const HomePage() : const PhoneInputPage();
       },
       error: (e, s) => Text('error'),
-      loading: () => Text('loading'),
+      loading: () => const CircularProgressIndicator(),
     );
   }
 }

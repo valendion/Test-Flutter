@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:test_assignment/pages/otp_page.dart';
 import 'package:test_assignment/provider/otp_provider.dart';
+import 'package:test_assignment/utils/auth_services.dart';
 
 class PhoneInputPage extends ConsumerStatefulWidget {
   const PhoneInputPage({super.key});
@@ -67,7 +68,7 @@ class _PhoneInputPageState extends ConsumerState<PhoneInputPage> {
               width: MediaQuery.of(context).size.width - 40,
               child: ElevatedButton(
                 onPressed: () {
-                  if (FirebaseAuth.instance.currentUser == null) {
+                  if (AuthServices.authCurrentUser() == null) {
                     ref.read(phoneNumberProvider.notifier).state =
                         phoneController.text.toString();
 
