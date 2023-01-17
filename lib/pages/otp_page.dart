@@ -157,7 +157,7 @@ class _OtpPageState extends ConsumerState<OtpPage> {
       await AuthServices.getAuth.verifyPhoneNumber(
         phoneNumber: '+62$phoneNumber',
         verificationCompleted: (_) {
-          // await FirebaseAuth.instance.signInWithCredential(credential);
+          // Kode kosong karena otp manual
         },
         verificationFailed: ((error) {
           debugPrint(error.message.toString());

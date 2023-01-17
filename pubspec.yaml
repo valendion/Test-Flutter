@@ -38,6 +38,7 @@ dependencies:
   flutter_svg: ^1.1.6
   fluttertoast: ^8.1.2
   images_picker: ^1.2.11
+  location: ^4.4.0
   native_video_view: ^1.0.5
   otp_text_field: ^1.1.3
 
