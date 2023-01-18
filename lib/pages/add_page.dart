@@ -13,6 +13,8 @@ import 'package:test_assignment/provider/input_text.dart';
 import 'package:test_assignment/provider/location_provider.dart';
 import 'package:test_assignment/utils/camera_helper.dart';
 
+import 'google_map_page.dart';
+
 class AddPage extends ConsumerStatefulWidget {
   static var routeName = '/addPage';
   AddPage({super.key});
@@ -85,14 +87,17 @@ class _AddPageState extends ConsumerState<AddPage> {
                 onTap: () {
                   pemissionLocation.when(
                       data: ((data) {
-                        print('Permssion => ${data.name}');
                         switch (data) {
                           case PermissionStatus.granted:
                             location.when(
                                 data: ((data) {
-                                  print('Location => ${data.longitude}');
                                   _inputLocation.text =
                                       'Longitude : ${data.longitude} dan Latitude : ${data.latitude}';
+                                  ref
+                                      .read(inputLocationProvider.notifier)
+                                      .state = data;
+                                  Navigator.pushNamed(
+                                      context, MapSample.routeName);
                                 }),
                                 error: ((error, stackTrace) {}),
                                 loading: () {
