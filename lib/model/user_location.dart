@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class UserLocation {
   double latitude;
   double longitude;

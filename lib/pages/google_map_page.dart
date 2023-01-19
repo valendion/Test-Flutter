@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:test_assignment/model/location/location_model.dart';
 import 'package:test_assignment/model/user_location.dart';
 
 import '../provider/input_text.dart';
@@ -28,7 +29,7 @@ class MapSampleState extends ConsumerState<MapSample> {
       zoom: 22,
     );
 
-    List<UserLocation> userLocations = [location];
+    List<LocationModel> userLocations = [location];
 
     // CameraPosition _kLake = CameraPosition(
     //     bearing: 192.8334901395799,
@@ -60,13 +61,13 @@ class MapSampleState extends ConsumerState<MapSample> {
     );
   }
 
-  Marker _customMarker(UserLocation e) => Marker(
+  Marker _customMarker(LocationModel e) => Marker(
         markerId: MarkerId(e.hashCode.toString()),
         draggable: true,
         position: LatLng(e.latitude, e.longitude),
         onDragEnd: (value) {
-          ref.read(inputLocationProvider.notifier).state = UserLocation(
-              latitude: value.latitude, longitude: value.longitude);
+          ref.read(inputLocationProvider.notifier).state = LocationModel()
+              .copyWith(latitude: value.latitude, longitude: value.longitude);
         },
       );
 }

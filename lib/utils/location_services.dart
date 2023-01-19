@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:location/location.dart';
 import 'package:test_assignment/model/user_location.dart';
+import '../model/location/location_model.dart';
 
 class LocationService {
   final Location _location = Location();
@@ -28,10 +29,10 @@ class LocationService {
     return location.requestPermission();
   }
 
-  Stream<UserLocation> getLocation() async* {
+  Stream<LocationModel> getLocation() async* {
     var locationCurrent = location.onLocationChanged;
     await for (final locationTransform in locationCurrent) {
-      yield UserLocation(
+      yield LocationModel().copyWith(
           latitude: locationTransform.latitude ?? 0,
           longitude: locationTransform.longitude ?? 0);
     }

@@ -8,10 +8,14 @@ import 'package:images_picker/images_picker.dart';
 import 'package:location/location.dart';
 
 import 'package:native_video_view/native_video_view.dart';
+import 'package:test_assignment/common/widget/show_message.dart';
+import 'package:test_assignment/model/user/user_model.dart';
+import 'package:test_assignment/model/video/video_model.dart';
 import 'package:test_assignment/provider/camera_provider.dart';
 import 'package:test_assignment/provider/input_text.dart';
 import 'package:test_assignment/provider/location_provider.dart';
 import 'package:test_assignment/utils/camera_helper.dart';
+import 'package:test_assignment/utils/storage_services.dart';
 
 import 'google_map_page.dart';
 
@@ -104,6 +108,14 @@ class _AddPageState extends ConsumerState<AddPage> {
                                   const CircularProgressIndicator();
                                 });
                             break;
+
+                          case PermissionStatus.denied:
+                            showMessge(context, 'Permission denied');
+                            break;
+
+                          case PermissionStatus.deniedForever:
+                            showMessge(context, 'Permission denied forever');
+                            break;
                           default:
                         }
                       }),
@@ -122,7 +134,18 @@ class _AddPageState extends ConsumerState<AddPage> {
             SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: ElevatedButton(
-                    onPressed: () async {}, child: const Text('Send Data'))),
+                    onPressed: () async {
+                      // var sendLocation = location.value;
+
+                      // debugPrint(
+                      //     'UserModel => ${UserModel().copyWith(title: _inputTitle.text, username: _inputUsername.text, locationModel: sendLocation, videoModel: VideoModel().copyWith(videoLink: ref.read(pathVideoProvider))).toString()}');
+
+                      var storageServices = StorageServices();
+                      var urlVideo = await storageServices
+                          .uploadVideo(ref.read(pathVideoProvider));
+                      debugPrint(urlVideo.toString());
+                    },
+                    child: const Text('Send Data'))),
           ])),
         ));
   }

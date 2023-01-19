@@ -127,8 +127,8 @@ class _OtpPageState extends ConsumerState<OtpPage> {
                         .signInWithCredential(credential)
                         .then((value) {
                       if (value.user != null) {
-                        showNotifWithToast('Berhasil login');
-
+                        // showNotifWithToast('Berhasil login');
+                        showNotification(context, 'Berhasil login');
                         Navigator.pushNamedAndRemoveUntil(
                             context, HomePage.routeName, ((route) => false));
                       } else {
