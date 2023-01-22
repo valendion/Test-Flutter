@@ -13,6 +13,6 @@ Map<String, Widget Function(BuildContext)> routes = {
   OtpPage.routeName: (context) => const OtpPage(),
   HomePage.routeName: (context) => const HomePage(),
   DetailPage.routeName: (context) => DetailPage(),
-  AddPage.routeName: (context) => AddPage(),
-  MapSample.routeName: (context) => MapSample(),
+  AddPage.routeName: (context) => const AddPage(),
+  MapSample.routeName: (context) => const MapSample(),
 };

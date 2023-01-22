@@ -1,10 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:images_picker/images_picker.dart';
 import 'package:location/location.dart';
 
 import 'package:native_video_view/native_video_view.dart';
@@ -15,13 +12,15 @@ import 'package:test_assignment/provider/camera_provider.dart';
 import 'package:test_assignment/provider/input_text.dart';
 import 'package:test_assignment/provider/location_provider.dart';
 import 'package:test_assignment/utils/camera_helper.dart';
+import 'package:test_assignment/utils/firestore_services.dart';
+import 'package:test_assignment/utils/location_services.dart';
 import 'package:test_assignment/utils/storage_services.dart';
 
 import 'google_map_page.dart';
 
 class AddPage extends ConsumerStatefulWidget {
   static var routeName = '/addPage';
-  AddPage({super.key});
+  const AddPage({super.key});
 
   @override
   ConsumerState<AddPage> createState() => _AddPageState();
@@ -34,7 +33,6 @@ class _AddPageState extends ConsumerState<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    var pemissionLocation = ref.watch(permissionLocationProvider);
     var location = ref.watch(locationProvider);
     return Scaffold(
         appBar: AppBar(
@@ -88,41 +86,36 @@ class _AddPageState extends ConsumerState<AddPage> {
               child: TextField(
                 controller: _inputLocation,
                 keyboardType: TextInputType.none,
-                onTap: () {
-                  pemissionLocation.when(
-                      data: ((data) {
-                        switch (data) {
-                          case PermissionStatus.granted:
-                            location.when(
-                                data: ((data) {
-                                  _inputLocation.text =
-                                      'Longitude : ${data.longitude} dan Latitude : ${data.latitude}';
-                                  ref
-                                      .read(inputLocationProvider.notifier)
-                                      .state = data;
-                                  Navigator.pushNamed(
-                                      context, MapSample.routeName);
-                                }),
-                                error: ((error, stackTrace) {}),
-                                loading: () {
-                                  const CircularProgressIndicator();
-                                });
-                            break;
+                onTap: () async {
+                  final navigator = Navigator.of(context);
+                  var locationServices = LocationService();
 
-                          case PermissionStatus.denied:
-                            showMessge(context, 'Permission denied');
-                            break;
+                  PermissionStatus permissionStatus =
+                      await locationServices.getPermission();
 
-                          case PermissionStatus.deniedForever:
-                            showMessge(context, 'Permission denied forever');
-                            break;
-                          default:
-                        }
-                      }),
-                      error: (error, stack) {},
-                      loading: () {
-                        const CircularProgressIndicator();
-                      });
+                  switch (permissionStatus) {
+                    case PermissionStatus.granted:
+                      var locationValue = location.value;
+                      if (locationValue != null) {
+                        _inputLocation.text =
+                            'Longitude : ${locationValue.longitude} dan Latitude : ${locationValue.latitude}';
+                        ref.read(inputLocationProvider.notifier).state =
+                            locationValue;
+
+                        navigator.pushNamed(MapSample.routeName);
+                      }
+                      break;
+                    case PermissionStatus.denied:
+                      if (mounted) return;
+                      showMessage(context, 'Permission denied');
+                      break;
+                    case PermissionStatus.deniedForever:
+                      if (mounted) return;
+                      showMessage(context, 'Permission denied forever');
+                      break;
+                    default:
+                      break;
+                  }
                 },
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(), labelText: 'Location'),
@@ -135,15 +128,23 @@ class _AddPageState extends ConsumerState<AddPage> {
                 width: MediaQuery.of(context).size.width - 40,
                 child: ElevatedButton(
                     onPressed: () async {
-                      // var sendLocation = location.value;
-
-                      // debugPrint(
-                      //     'UserModel => ${UserModel().copyWith(title: _inputTitle.text, username: _inputUsername.text, locationModel: sendLocation, videoModel: VideoModel().copyWith(videoLink: ref.read(pathVideoProvider))).toString()}');
+                      var sendLocation = location.value;
 
                       var storageServices = StorageServices();
                       var urlVideo = await storageServices
                           .uploadVideo(ref.read(pathVideoProvider));
                       debugPrint(urlVideo.toString());
+
+                      var userModel = UserModel().copyWith(
+                          title: _inputTitle.text,
+                          username: _inputUsername.text,
+                          locationModel: sendLocation,
+                          videoModel:
+                              VideoModel().copyWith(videoLink: urlVideo));
+
+                      var firebaseFirestore = FirestoreServices();
+                      firebaseFirestore.nameCollection = 'users';
+                      firebaseFirestore.addDataFirestore(userModel);
                     },
                     child: const Text('Send Data'))),
           ])),
@@ -184,7 +185,7 @@ class _AddPageState extends ConsumerState<AddPage> {
             controller.play();
           },
           onError: (controller, what, extra, message) {
-            print('Player Error ($what | $extra | $message)');
+            debugPrint('Player Error ($what | $extra | $message)');
           },
           onCompletion: (controller) {
             debugPrint('Video completed');

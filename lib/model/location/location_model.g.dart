@@ -6,8 +6,7 @@ part of 'location_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_LocationModel _$$_LocationModelFromJson(Map<String, dynamic> json) =>
-    _$_LocationModel(
+_$_LocationModel _$$_LocationModelFromJson(Map json) => _$_LocationModel(
       latitude: (json['latitude'] as num?)?.toDouble() ?? 0,
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0,
     );

@@ -6,8 +6,7 @@ part of 'video_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_VideoModel _$$_VideoModelFromJson(Map<String, dynamic> json) =>
-    _$_VideoModel(
+_$_VideoModel _$$_VideoModelFromJson(Map json) => _$_VideoModel(
       videoLink: json['videoLink'] as String? ?? '',
     );
 
